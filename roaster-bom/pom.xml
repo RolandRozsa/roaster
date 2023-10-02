@@ -264,7 +264,7 @@
 				<artifactId>microprofile-rest-client</artifactId>
 				<version>${version.org.jboss.resteasy.microprofile-rest-client}</version>
 				<exclusions>
-					<!-- 3.0.0 verziot akarja behuzni ami nem a jakarta.platform:jakarta.jakartaee-api:10.0.0 csomag resze -->
+					<!-- It wants to import version 3.0.0, which is not part of the package jakarta.platform:jakarta.jakartaee-api:10.0.0 -->
 					<exclusion>
 						<groupId>jakarta.ws.rs</groupId>
 						<artifactId>jakarta.ws.rs-api</artifactId>
