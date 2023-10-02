@@ -1,0 +1,23 @@
+= 0.6.0 -> 0.7.0
+
+== Changes
+
+=== General
+
+==== BOM version elevations
+* junit5 v5.6.2 -> v5.8.2
+* selenide v6.1.2 -> v6.3.0
+
+=== roaster-common-config
+* The call to `public YamlConfigSource(String name, InputStream stream, int defaultOrdinal) throws IOException` used in `RoasterYmlConfigSourceProvider` has been `@Deprecated` so from this version onwards the call to `public YamlConfigSource(String name, String source, int ordinal)` is made
+
+=== Migration
+The changes will not result in any migration work, it is backwards compatible.
+
+
+=== roaster-tm4j
+* `MissingResourceException` has been fixed
+
+=== Migration
+The changes will not result in any migration work, it is backwards compatible.
+

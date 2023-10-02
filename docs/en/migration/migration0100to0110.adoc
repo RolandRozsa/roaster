@@ -1,0 +1,14 @@
+= 0.10.0 -> 0.11.0
+
+== Changes
+
+=== roaster-zephyr
+
+* The Roaster Zephyr module is released. It can be used to display the results of Zephyr Scale test runs in the interface when using cloud jira. To use it, you need to make the following changes:
+. pom.xml you need to replace the module roaster-tm4j-junit5 with the module roaster-zephyr-junit5.
+. In the test classes, the extension should be replaced with ZephyrExtension and the @TestCaseId annotation in the zephyr package should be used in the tests.
+. In the roaster yml files you need to change the tm4j configuration to the zephyr configuration.
+.. You need to generate the api keys for jira and zephyr in cloud jira with the user account of the test uploader
+.. server/authToken should be set to the key obtained from base64(email ":" jiraApiToken)
+... Alternatively, server/email and server/apiToken keys can be specified separately for the jira user email address and the generated api token, in which case no authToken should be specified.
+.. cloud/bearerToken value must be the JWT token generated in the Zephyr Scale Cloud interface

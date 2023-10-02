@@ -1,0 +1,27 @@
+= 0.9.0 -> 0.10.0
+
+== Changes
+
+=== roaster-tm4j
+
+* Possibility to specify different TM4J test cycles per test member using the `roaster.tm4j.cycle.{0}` config key
+* exception due to sharing with `roaster-restassured` module fixed
+
+=== Migration
+The changes will not result in any migration work, it is backwards compatible.
+
+=== JDK 17 support
+The project now supports java 17,
+so it can be used in a java-based project like this.
+Most of the problematic parts were fixed by dependency updates and javadoc extensions.
+
+.java 11
+The roaster will still be compiled with java 11,
+but also get compilation and testing checks for java 17.
+This will minimise the java version's discrepancy problems.
+
+==== BOM version elevations:
+* `org.jboss.weld:weld-junit5` 2.0.1.Final -> 2.0.2.Final
+* `org.jboss.weld:weld-core-impl` 3.1.5.Final -> 3.1.9.Final
+* `io.smallrye.config` 2.0.2 -> 2.13.0
+* `com.google.guava:guava` 30.1.1jre -> 31.1jre (the selenide version used is no longer compatible with the old one)

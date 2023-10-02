@@ -1,0 +1,43 @@
+= 0.5.0 -> 0.6.0
+
+== Changes
+
+=== General
+
+==== BOM version elevations
+* coff:ee 1.6.0 → 1.8.0
+* microprofile 3.3 -> 4.0
+* smallrye-config 1.8.5 -> 2.0.2
+
+==== Migration
+The changes will not result in any migration work, it is backwards compatible.
+
+=== roaster-restassured
+* The ResponseProcessor has been extended with deleteXml and deleteJson methods
+
+=== Migration
+The changes will not result in any migration work, it is backwards compatible.
+
+=== roaster selenides
+* Selenide upgrade 5.22.2 -> 6.1.2
+
+=== Migration
+* The Selenide upgrade may cause problems. See https://github.com/selenide/selenide/blob/master/CHANGELOG.md[Selenide changelog]
+
+=== roaster-selenide-angular
+* The module has been created, including the following components: `MatCheckbox`, `MatRadioGroup`, `MatSelect`, `MatSlideToggle`
+
+=== Migration
+The changes will not result in any migration work, it is backwards compatible.
+
+==== roaster-mongodb
+* The module has been created
+
+==== Migration
+The changes will not result in any migration work, it is backwards compatible.
+
+==== roaster-oracle
+* DB connection pool was introduced; the `maximumPoolSize` config key was created
+
+==== Migration
+The changes will not result in any migration work, it is backwards compatible.

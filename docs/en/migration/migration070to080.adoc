@@ -1,0 +1,50 @@
+= 0.7.0 -> 0.8.0
+
+== What's new
+
+A new module has been created: *roaster-jaxrs*.
+Its main goal is to provide solutions to needs using a JAXRS level specification,
+which *roaster-restassured* cannot.
+One example is multipart treatment,
+or *microprofile-rest-client*,
+which can replace a lot of customization.
+The description for the *roaster-jaxrs* module is <<Jaxrs>> and testsuite.
+
+== Changes
+
+=== General
+* en.icellmobilsoft.roaster.common.util.FileUtil with `InputStream` reader parameters added,
+error handling is handled by the function itself.
+
+==== BOM version elevations
+* coffee v1.8.0 -> https://i-cell-mobilsoft-open-source.github.io/coffee/#_v1_9_0_v1_10_0 [v1.10.2]
+* deltaspike 1.9.1 -> 1.9.6
+
+=== roaster-restassured
+* The `HealthCheckTestHelper` has been modified, it is now possible to use typed probe calls in addition to the general `/health` endpoint call:
+- `/health/ready`
+- `/health/live`
+- `/health/started`
+* The new *roaster-jaxrs* module has been included as a dependency,
+as they share a common configuration and usage (same classes).
+This causes small changes to the java path.
+
+=== Migration
+Change requires small changes,
+namely the following java paths have changed:
+
+* hu.icellmobilsoft.roaster.*restassured*.response.producer.ManagedResponseProcessorConfig -> hu.icellmobilsoft.roaster.*jaxrs*.response.producer.ManagedResponseProcessorConfig
+* hu.icellmobilsoft.roaster.*restassured*.response.producer.ResponseProcessorConfig -> hu.icellmobilsoft.roaster.*jaxrs*.response.producer.ResponseProcessorConfig
+* hu.icellmobilsoft.roaster.*restassured*.response.producer.RestProcessor -> hu.icellmobilsoft.roaster.*jaxrs*.response.producer.RestProcessor
+
+Otherwise there are no operational changes, everything else is unaffected, backwards compatible.
+
+=== roaster-redis
+The Coff:ee update caused a change in `hu.icellmobilsoft.roaster.redis.RedisHandler`
+class (in coffee, `RedisService` has been removed).
+Small changes have been caused by the transfer,
+and that the methods return `Optional` instead of `String` or `void`.
+
+=== Migration
+The change may require minor adjustments to the type of return values,
+otherwise backwards compatible.

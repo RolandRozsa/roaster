@@ -1,0 +1,46 @@
+= 0.4.0 -> 0.5.0
+
+== Changes
+
+=== General
+coff:ee update 1.5.0 → 1.6.0
+
+=== roaster-restassured
+* Microprofile configurable Injectable ResponseProcessor (`@RestProcessor`, `ConfigurableResponseProcessor`)
+* The `testOpenAPI` method of the OpenAPITestHelper class has been extended with the `expectedOpenapiVersion` parameter to be set at project level.
+Overloading also preserves the original syntax, calling it `3.0.3` by default is the expected openapi version.
+* Two overrideable methods `decorateRequestSpecification`, `decorateValidatableResponse` have been introduced in the OpenAPITestHelper class.
+In default mode, it handles request and response logging, logging can be disabled/configured at project level by dereferencing the class.
+ 
+[source,java]
+.Example of response log disable
+----
+@Model
+@Alternative
+@Priority(Interceptor.Priority.APPLICATION 10)
+public class ProjectOpenApiTestHelper extends OpenAPITestHelper {
+
+    @Override
+    protected ValidatableResponse decorateValidatableResponse(ValidatableResponse validatableResponse) {
+//      return validatableResponse.log().all();
+        return validatableResponse;
+    }
+}
+----
+
+=== Migration
+* `OpenAPITestHelper.testOpenAPI(java.lang.String)` hereafter `3.0.1` instead of `3.0.3` runs assert for OpenAPI version.
+If this does not match at the project level, the `OpenAPITestHelper.testOpenAPI(java.lang.String, java.lang.String)` method can be used to override the expected version.
++
+[source,java]
+.Example of response log disable
+----
+    @Test
+    @DisplayName("Testing Sampple service /openapi")
+    void testOpenapi() {
+//      Default openapi test expected openapi version = 3.0.3
+//      openAPITestHelper.testOpenAPI(projectSampleServiceBaseUri);
+//      Openapi test with custom openapi version
+        openAPITestHelper.testOpenAPI(projectSampleServiceBaseUri, "3.0.0");
+    }
+----

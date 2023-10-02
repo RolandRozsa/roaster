@@ -1,0 +1,63 @@
+= 0.1.0 -> 0.2.0
+
+== What's new
+
+<<modules/modules-tm4j.adoc,TM4J - Test Management for Jira Module>>
+
+<<modules/modules-selenide.adoc,selenide module>>
+
+<<modules/modules-hibernate.adoc,Hibernate Module>>
+
+== Changes
+=== roaster-restassured
+* The default JSON object mapper serializes the time values to ISO format instead of "1600871093.907000000".
+
+* The deprecated option has been removed
+
+[source,java]
+----
+@Inject
+private RestAssuredConfig restAssuredConfig;
+----
+
+Now only available with @JSON qualifier
+
+[source,java]
+----
+@Inject
+@JSON
+private RestAssuredConfig restAssuredConfig;
+----
+
+* Weld container runs in enableDiscovery() mode, no need to add classes separately.
+* en.icellmobilsoft.roaster.restassured.BaseConfigurableWeldIT.configureWeld() depreceted.
+
+=== Migration
+
+The IT tests should remove the beans that have been added manually, otherwise
+"Bean name is ambiguous." error message.
+[source,java]
+----
+@Deprecated
+@Override
+protected void configureWeld(Weld weld) {
+weld.addBeanClasses(SampleAction.class);
+}
+----
+
+=== roaster-weldunit
+
+* Weld container runs in enableDiscovery() mode, no need to add classes separately.
+* en.icellmobilsoft.roaster.weldunit.BaseWeldUnitType.configureWeld() has been depreceted.
+
+=== Migration
+
+From the unit tests you have to remove the beans that have been added manually, otherwise
+"Bean name is ambiguous." error message.
+[source,java]
+----
+@Deprecated
+@Override
+protected void configureWeld(Weld weld) {
+weld.addBeanClasses(SampleAction.class);
+}

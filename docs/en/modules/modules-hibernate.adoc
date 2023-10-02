@@ -1,0 +1,193 @@
+[#modules-hibernate]
+= Hibernate
+
+To use the Hibernate module, you must first reference the following dependency in pom.xml:
+
+[source,xml]
+.pom.xml
+----
+<dependency>
+    <groupId>hu.icellmobilsoft.roaster</groupId>
+    <artifactId>roaster-hibernate</artifactId>
+</dependency>
+----
+
+It also requires the addition of the appropriate jdbc driver, which may vary from site to site.
+It is recommended to use the following:
+
+[source,xml]
+.pom.xml for Oracle19
+----
+
+    <dependency>
+        <groupId>com.oracle.ojdbc</groupId>
+        <artifactId>ojdbc10</artifactId>
+        <version>19.3.0.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.oracle.ojdbc</groupId>
+        <artifactId>orai18n</artifactId>
+        <version>19.3.0.0</version>
+    </dependency>
+
+----
+
+[source,xml]
+.pom.xml for Mysql
+----
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.22</version>
+    </dependency>
+
+----
+
+[source,xml]
+.pom.xml for H2
+----
+    <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.4.200</version>
+    </dependency>
+
+----
+
+
+[source,xml]
+.pom.xml for PostgreSQL
+----
+    <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.2.18</version>
+    </dependency>
+
+----
+
+In addition, the following configurations must be made:
+
+== Hibernate Configuration parameters
+
+To use hibernate at the project level, you need to create persistence.xml in the META-INF folder under resources.
+If it is created with *defaultPU* (as in the example), then EntityManager can be injected without extra annotation.
+
+Examples:
+
+[source,xml]
+.META-INF/persistence.xml
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+            http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+            version="2.1">
+
+    <persistence-unit name="defaultPU">
+        <mapping-file>META-INF/jpa-entity.xml</mapping-file>
+    </persistence-unit>
+</persistence>
+
+----
+
+[TIP]
+You need to add the entities to persistence.xml anyway!
+For more specific settings, a simple description can be found here: https://vladmihalcea.com/jpa-persistence-xml/
+What is specified via microprofile-config will be used, overriding the same properties in persistence.xml.
+If a particular part is not set in microprofile-config, but is in persistence.xml, then the default will apply.
+
+With microprofile-config you can parameterize the Hibernate configuration data:
+
+Examples:
+
+[source,properties]
+.META-INF/microprofile-config.properties
+----
+roaster.hibernate.defaultPU.jdbc.driver=oracle.jdbc.OracleDriver
+roaster.hibernate.defaultPU.jdbc.url=jdbc:oracle:thin:@//localhost:1521/XE
+roaster.hibernate.defaultPU.jdbc.user=db_username
+roaster.hibernate.defaultPU.jdbc.password=*****
+roaster.hibernate.defaultPU.hibernate.default_schema=user_schema
+roaster.hibernate.defaultPU.hibernate.dialect=org.hibernate.dialect.Oracle12cDialect
+roaster.hibernate.defaultPU.hibernate.show_sql=true
+roaster.hibernate.defaultPU.hibernate.format_sql=true
+----
+
+[source,yml]
+.META-INF/roaster-defaults.yml
+----
+    roaster:
+        hibernate:
+            defaultPU:
+                jdbc:
+                    driver: oracle.jdbc.OracleDriver
+                    url: jdbc:oracle:thin:@//localhost:1521/XE
+                    user: db_username
+                    password: *****
+                hibernate:
+                    default_schema: user_schema
+                    dialect: org.hibernate.dialect.Oracle12cDialect
+                    show_sql: true
+                    format_sql: true
+
+----
+
+== Example of use
+
+[source,java]
+.HibernateTest example class
+----
+public class HibernateTest extends BaseWeldUnitType {
+
+    @Inject
+    // In the background, @HibernatePersistenceConfig(persistenceUnitName = "defaultPU")
+    private EntityManager userEntityManager;
+
+    @Inject
+    @HibernatePersistenceConfig(persistenceUnitName = "otherPu")
+    private EntityManager otherEntityManager;
+
+    @Test
+    public void testEntityManager() {
+        Assertions.assertNotNull(userEntityManager);
+        SecurityUser securityUser = userEntityManager.find(SecurityUser.class, "0");
+        Assertions.assertNotNull(securityUser);
+        Assertions.assertNotNull(otherEntityManager);
+        OtherEntity other = userEntityManager.find(OtherEntity.class, "0");
+        Assertions.assertNotNull(other);
+    }
+
+
+    @Test
+    public void testUseEntityManager() {
+        Assertions.assertNotNull(userEntityManager);
+
+        User user = userEntityManager.find(User.class, "FD34123");
+        Assertions.assertNotNull(user);
+
+        CriteriaBuilder builder = userEntityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
+        criteriaQuery.select(root);
+        List<Order> os = new ArrayList<>();
+        os.add(builder.asc(root.get(User_.creationDate)));
+        criteriaQuery.orderBy(os);
+        TypedQuery<User> query = userEntityManager.createQuery(criteriaQuery);
+        List<User> resultList = query.getResultList();
+        // Assertions resultList
+
+        CriteriaQuery<Long> countCriteriaQuery = builder.createQuery(Long.class);
+        Root<User> countRoot = countCriteriaQuery.from(User.class);
+        countCriteriaQuery.select(builder.count(countRoot));
+        TypedQuery<Long> countQuery = userEntityManager.createQuery(countCriteriaQuery);
+        Long count = countQuery.getSingleResult();
+        // Assertions count
+    }
+
+}
+----

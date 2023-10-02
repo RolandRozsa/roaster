@@ -1,0 +1,77 @@
+= Maven Structure
+
+== Project Repository
+
+The tests can be placed in the same repository as the project, 
+under a separate testsuite module beneath the main pom. 
+It is recommended to put the "testsuite" node in an inactive profile, for example:
+
+.Main project pom.xml
+[source,xml]
+----
+<profiles>
+  <profile>
+    <id>ci</id>
+    <activation>
+      <activeByDefault>true</activeByDefault>
+    </activation>
+    <modules>
+      <module>project-testsuite</module>
+    </modules>
+  </profile>
+</profiles>
+----
+
+[subs="quotes"]
+.Recommended example project Maven structure
+----
+project-backend
++-- project-bom
++-- project-common
++-- project-sample
+\-- *project-testsuite*
+----
+
+== Testsuite module
+
+Within the testsuite module, the child poms follow the structure of the project. 
+For example, if a service exists in the project-backend/project-sample/project-sample-service module, 
+then the tests corresponding to that service will be placed under project-backend/project-testsuite/project-testsuite-sample/project-testsuite-sample-service pom.
+
+The testsuite Maven module for a service is further divided into sub-modules based on the REST interfaces present in the service, 
+each of these sub-modules contains separate test classes for each operation.
+
+[subs="quotes"]
+.Example testsuite module structure
+----
+*project-backend*
++-- *project-bom*
++-- *project-common*
++-- *project-sample*
+|   \-- *project-sample-service*
+|       \-- src/main/java/
+|           \-- hu.icellmobilsoft.project.sample.service.rest
+|               +-- IUserRest.java //<1>
+|               |   +-- _postUser()_ //<2>
+|               |   \-- _putUser()_ //<3>
+|               \-- ISampleRest.java //<4>
+|                   \-- _getSample()_ //<5>
+\-- *project-testsuite*
+    +-- *project-testsuite-common*
+    \-- *project-testsuite-sample*
+        \-- *project-testsuite-sample-service*
+            +-- *project-testsuite-sample-service-user-rest* //<1>
+                \-- src/test/java/
+                    \-- hu.icellmobilsoft.project.testsuite.sample.service.rest
+                        +-- _PostUserIT_ //<2>
+                        \-- _PutUserIT_ //<3>
+            \-- *project-testsuite-sample-service-sample-rest* //<4>
+                \-- src/test/java/
+                    \-- hu.icellmobilsoft.project.testsuite.sample.service.rest
+                        \-- _GetSampleIT_ //<5>
+----
+<1> `IUserRest` interface of the sample-service. It has its own pom in the testsuite: `project-testsuite-sample-service-user-rest`
+<2> `IUserRest.postUser()` operation. It has its own test class under the user-rest pom in the testsuite: `PostUserIT`
+<3> `IUserRest._putUser()` operation. It has its own test class under the user-rest pom in the testsuite: `PutUserIT`
+<4> `ISampleRest` interface of the sample-service. It has its own pom in the testsuite: `project-testsuite-sample-service-sample-rest`
+<5> `IUserRest._getSample()` operation. It has its own test class under the sample-rest pom in the testsuite: `GetSampleIT`

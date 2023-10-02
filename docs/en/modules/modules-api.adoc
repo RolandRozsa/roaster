@@ -1,0 +1,37 @@
+= API
+
+To use the API module, you just need to include a reference in pom.xml
+
+[source,xml]
+.pom.xml
+----
+<dependency>
+    <groupId>hu.icellmobilsoft.roaster</groupId>
+    <artifactId>roaster-api</artifactId>
+</dependency>
+----
+
+== Using API
+
+=== BaseBuilder
+
+This class is intended to be the common ancestor of request builders.
+
+==== Example implementation
+
+[source,java]
+----
+public class ExampleQueryRequestBuilder extends BaseBuilder<ExampleQueryRequest> {
+
+    public Foo getFoo() {
+        if (getDto() == null) {
+            setDto(createEmpty());
+        }
+        return getDto().getFoo();
+    }
+
+    @Override
+    public ExampleQueryRequest createEmpty() {
+        return new ExampleQueryRequest();
+    }
+}

@@ -1,0 +1,25 @@
+= 0.8.0 -> 0.9.0
+
+== Changes
+
+=== General
+
+==== BOM version elevations
+* jackson-datatype-jsr310 2.13.3 -> 2.13.4
+* jackson-jaxrs-json-provider 2.13.3 -> 2.13.4
+* jackson-annotations 2.13.3 -> 2.13.4
+* jackson-databind 2.13.3 -> 2.13.4.2
+* commons-text 1.8 -> 1.10.0
+* coffee v1.10.2 -> https://i-cell-mobilsoft-open-source.github.io/coffee/#_v1_11_0_v1_12_0 [v1.12.1]
+
+=== Migration
+The changes will not result in any migration work, it is backwards compatible.
+
+=== roaster-jaxrs
+
+* Added `jakarta.servlet:jakarta.servlet-api` to dependency.
+This is a mandatory API, used for example by Resteasy dependencies.
+In its absence, the tests failed with an uninformative error message.
+
+=== Migration
+The changes will not result in any migration work, it is backwards compatible.
